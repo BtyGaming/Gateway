@@ -1,7 +1,7 @@
 spring:
   application:
-    name: Gateway # Nombre de la aplicación del API Gateway
+    name: Gateway # Nombre de la aplicaciï¿½n del API Gateway
   config:
     import: optional:configserver:http://localhost:8888
- # Puerto en el que estará el API Gateway
+
 
