@@ -4,21 +4,21 @@ WORKDIR /build
 
 # Copy pom first for dependency caching
 COPY pom.xml .
-RUN mvn dependency:go-offline
+RUN mvn dependency:go-offline -Dmaven.repo.remote=false
 
 # Copy source and build
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true
+
+# Expose puerto 8080
+EXPOSE 8080
 
 # Run stage
 FROM eclipse-temurin:21-jre AS runtime
 WORKDIR /app
 
 # Copy jar from build stage
-COPY --from=builder /build/target/*.jar app.jar
-
-# Expose gateway port
-EXPOSE 8080
+COPY --from=builder /build/target/Gateway-0.0.1-SNAPSHOT.jar app.jar
 
 # Run application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
