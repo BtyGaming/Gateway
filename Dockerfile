@@ -1,12 +1,17 @@
 # Build stage
 FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /build
+
+# Set UTF-8 encoding
+ENV MAVEN_OPTS="-Dfile.encoding=UTF-8"
+
+# Copy pom first for dependency caching
 COPY pom.xml .
-# Download dependencies first (cache layer)
 RUN mvn dependency:go-offline
 
+# Copy source and build
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -Dproject.build.sourceEncoding=UTF-8
 
 # Run stage
 FROM eclipse-temurin:21-jre AS runtime
